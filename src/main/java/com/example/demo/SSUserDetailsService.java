@@ -42,6 +42,7 @@ public class SSUserDetailsService implements UserDetailsService{
         Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
         for (Role role : user.getRoles())
         {
+            //spring will use to determine the role of the user
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getRole());
             authorities.add(grantedAuthority);
         }

@@ -38,27 +38,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/h2-console/**", "/register").permitAll()
+                .antMatchers("/", "/h2-console/**", "/register").permitAll()//could put these in array (not arraylist)
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login").permitAll()
+                .formLogin().loginPage("/login").permitAll()//must be on its own line
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login").permitAll().permitAll()
+                .logoutSuccessUrl("/login").permitAll()//after logout the user is taken to /login
                 .and()
                 .httpBasic();
         http
-                .csrf().disable();
+                .csrf().disable(); //only for H2 console, NOT IN PRODUCTION
         http
-                .headers().frameOptions().disable();
+                .headers().frameOptions().disable(); //only for H2 console, NOT IN PRODUCTION
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
-        auth
-                .userDetailsService(userDetailsServiceBean()).passwordEncoder(encoder());
+       // auth.inMemoryAuthentication().withUser("dave").password(encoder().encode("password")).authorities("ADMIN");
+        auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(encoder());
     }
 }
 

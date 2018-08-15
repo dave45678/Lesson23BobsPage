@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,16 +11,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 
 @Controller
 public class HomeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String showRegistrationPage(Model model)
     {
-        model.addAttribute("user", new User());
+        User user = new User();
+        model.addAttribute("user",user);
         return "registration";
     }
 
@@ -55,6 +65,23 @@ public class HomeController {
     public String secure()
     {
         return "secure";
+    }
+
+    @RequestMapping("/bobspage")
+    public String bobspage(){
+
+        String page = "index";
+        if (getUser().getUsername().equalsIgnoreCase("bob")){
+            page = "bobspage";
+        }
+
+        return page;
+
+    }
+    private User getUser(Authentication authentication){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+           User user = userRepository.findByUsername(authentication.getName());
+        return user;
     }
 }
 
